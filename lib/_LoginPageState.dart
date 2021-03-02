@@ -55,11 +55,12 @@ class _LoginPageState extends State<MyLoginPage> {
       //saving user info
       CurrentUser.user = user;
       ToastManager().showSuccessDialog("Logged IN!");
-      Navigator.pushNamed(context, '/');
+      Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
     } else {
       ToastManager().showErrorDialog("No such user!");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -26,6 +26,7 @@ class _HomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     fetchData();
+    updateNavDraw();
   }
 
   void fetchData() async {
@@ -36,8 +37,6 @@ class _HomePageState extends State<MyHomePage> {
         items = summFromJson(response.body);
       });
     }
-    updateNavDraw();
-    Navigator.pop(context);
   }
 
   Drawer _navigationDrawer = Drawer();
