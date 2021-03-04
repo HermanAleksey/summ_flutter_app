@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:summ_flutter_app/UI/AlertDialogWorker.dart';
 import 'package:summ_flutter_app/entity/Role.dart';
+import '../entity/User/User.dart';
+
+import '../CurrentUser.dart';
+import 'ToastManager.dart';
 
 class NavigationDrawer {
   ListTile singInTile(BuildContext context) {
@@ -41,7 +45,8 @@ class NavigationDrawer {
       title: Text('Home'),
       onTap: () {
         //возврат к корню
-        Navigator.pop(context);
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/home');
       },
     );
   }
@@ -51,7 +56,8 @@ class NavigationDrawer {
       leading: Icon(Icons.work),
       title: Text('Cabinet'),
       onTap: () {
-
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/cabinet');
       },
     );
   }
@@ -61,7 +67,7 @@ class NavigationDrawer {
       leading: Icon(Icons.supervised_user_circle),
       title: Text('Profile'),
       onTap: () {
-
+        AlertDialogWorker.showProfileSettingsDialog(context);
       },
     );
   }
@@ -71,7 +77,11 @@ class NavigationDrawer {
       leading: Icon(Icons.logout),
       title: Text('Sing out'),
       onTap: () {
-
+        User user = CurrentUser.user;
+        user.setRole(Role.GUEST);
+        CurrentUser.user = user;
+        ToastManager().showSuccessDialog("Logged out!");
+        Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
       },
     );
   }
@@ -82,6 +92,7 @@ class NavigationDrawer {
       title: Text('User list'),
       onTap: () {
         Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/userTable');
       },
     );
   }

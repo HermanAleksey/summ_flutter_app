@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:summ_flutter_app/_CabinetPageState.dart';
 import 'package:summ_flutter_app/_HomePageState.dart';
+import 'package:summ_flutter_app/_UsersTablePageState.dart';
 
 import '_LoginPageState.dart';
 
@@ -22,6 +24,8 @@ class MyApp extends StatelessWidget {
         '/': (BuildContext context) => MyHomePage(),
         '/login': (BuildContext context) => MyLoginPage(),
         '/registration': (BuildContext context) => MyHomePage(),
+        '/userTable': (BuildContext context) => MyUsersTablePage(),
+        '/cabinet': (BuildContext context) => MyCabinetPage(),
       },
     );
   }

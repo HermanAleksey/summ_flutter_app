@@ -1,6 +1,6 @@
 import 'package:summ_flutter_app/entity/Role.dart';
 
-import 'entity/User.dart';
+import 'entity/User/User.dart';
 
 class CurrentUser {
   CurrentUser._privateConstructor();

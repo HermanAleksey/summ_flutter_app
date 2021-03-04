@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import '../entity/Summ/Summ.dart';
+import 'package:summ_flutter_app/entity/User/User.dart';
 
 //общая работа с API сервера. Организовано как синглтон.
 class Networker {
-  String baseUrl = 'http://192.168.1.7:8080/api/v1';
+  String baseUrl = 'http://192.168.100.8:8080/api/v1';
   final headers = {'Content-Type': 'application/json'};
 
-  void changeIP(String serverIP){
+  void changeIP(String serverIP) {
     baseUrl = "http://$serverIP:8080/api/v1";
   }
 
@@ -16,126 +18,110 @@ class Networker {
 
   static Networker get instance => _instance;
 
-  void requestDebug(String mapping, int responseCode, String responseBody){
-    print("\nWas called /home mapping\nresponse code = $responseCode\n"
+  void requestDebug(String mapping, int responseCode, String responseBody) {
+    print("\nWas called $mapping mapping\nresponse code = $responseCode\n"
         "response body = $responseBody\n---------------------\n");
   }
 
-
-
-
   Future<Response> getAllSumms() async {
     Response response = await get(baseUrl + "/home");
-    requestDebug("/home",response.statusCode,response.body.toString());
+    requestDebug("/home", response.statusCode, response.body.toString());
 
     return response;
   }
+
+  Future<Response> getSummsForUser(int userId) async {
+    Response response = await get(baseUrl + "/user/summ?userId=$userId");
+    requestDebug("/user/summ?userId=$userId", response.statusCode,
+        response.body.toString());
+
+    return response;
+  }
+
+  Future<Response> insertSumm(int userId, Summ summ) async {
+    print("\n\n\ninsertSumm\n\n\n");
+    Response response = await post(baseUrl + "/summ/insert?userId=$userId",
+        headers: headers,
+        body: jsonEncode(summ),
+        encoding: Encoding.getByName("utf-8"));
+    requestDebug("/summ/insert?userId=$userId", response.statusCode,
+        response.body.toString());
+
+    return response;
+  }
+
+  Future<bool> removeSumms(List<int> list) async {
+    print("\n\n\n\nblablalbal\n\n\n\n");
+    if (list.isEmpty) return false;
+    print("\n\n\n\nblablalbal____2\n\n\n\n");
+
+    Response response = await post(baseUrl + "/summ/deleteFew",
+        headers: headers,
+        body: list.toString(),
+        encoding: Encoding.getByName("utf-8"));
+    requestDebug(
+        "/summ/deleteFew", response.statusCode, response.body.toString());
+
+    if (response.statusCode != 200) return false;
+    return true;
+  }
+
+  /***********************************************For users***********************************/
 
   Future<Response> singIn(String uname, String password) async {
-    Response response = await get(baseUrl + "/login?uname=$uname&password=$password");
-    requestDebug("/login?uname=$uname&password=$password",response.statusCode,response.body.toString());
+    Response response =
+        await get(baseUrl + "/login?uname=$uname&password=$password");
+    requestDebug("/login?uname=$uname&password=$password", response.statusCode,
+        response.body.toString());
 
     return response;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /**----------------------------- ACCOUNT -----------------------------**/
-  Future<Response> loginRequest(String body) async {
-    print('baseUrl:${baseUrl}');
-    Response response = await post(baseUrl + "/login",
-        headers: headers, body: body, encoding: Encoding.getByName("utf-8"));
+  Future<Response> getAllUsers() async {
+    Response response = await get(baseUrl + "/users");
+    requestDebug("/users", response.statusCode, response.body.toString());
 
     return response;
   }
 
-  Future<Response> registrationRequest(String body) async {
-    Response response = await post(baseUrl + "/create",
-        headers: headers, body: body, encoding: Encoding.getByName("utf-8"));
+  Future<bool> updateUser(User user) async {
+    print("\n\n\n$user\n\n\n");
+    Response response = await post(baseUrl + "/user/update",
+        headers: headers,
+        body: jsonEncode(user),
+        encoding: Encoding.getByName("utf-8"));
 
-    return response;
-  }
-
-  /**----------------------------- DRIVERS -----------------------------**/
-  Future<Response> getAllDrivers() async {
-    Response response = await get(baseUrl + "/driver/selectAll");
-    return response;
-  }
-
-  Future<bool> insertDriver(String driver) async {
-    Response response = await post(baseUrl + "/driver/create",
-        headers: headers, body: driver, encoding: Encoding.getByName("utf-8"));
+    requestDebug("/user/update", response.statusCode, response.body.toString());
 
     if (response.statusCode != 200) return false;
     return true;
   }
 
-  Future<bool> updateDriver(String driver) async {
-    Response response = await post(baseUrl + "/driver/update",
-        headers: headers, body: driver, encoding: Encoding.getByName("utf-8"));
-
-    if (response.statusCode != 200) return false;
-    return true;
-  }
-
-  Future<bool> removeDrivers(List<int> list) async {
+  Future<bool> removeUsers(List<int> list) async {
     if (list.isEmpty) return false;
 
-    print(list.toString());
-    Response response =
-        await post(baseUrl + "/driver/deleteFew",body: list.toString(), headers: headers);
-    if (response.statusCode != 200) return false;
-
-    return true;
-  }
-
-/**----------------------------- OPERATORS -----------------------------**/
-
-  Future<Response> getAllOperators() async {
-    print('baseUrl + \"/operator/all\"');
-    Response response = await get(baseUrl + "/operator/selectAll");
-    return response;
-  }
-
-  Future<bool> insertOperator(String operator) async {
-    Response response = await post(baseUrl + "/operator/create",
-        headers: headers, body: operator, encoding: Encoding.getByName("utf-8"));
+    Response response = await post(baseUrl + "/user/deleteFew",
+        headers: headers,
+        body: list.toString(),
+        encoding: Encoding.getByName("utf-8"));
+    requestDebug(
+        "/user/deleteFew", response.statusCode, response.body.toString());
 
     if (response.statusCode != 200) return false;
     return true;
   }
 
-  Future<bool> updateOperator(String operator) async {
-    Response response = await post(baseUrl + "/operator/update",
-        headers: headers, body: operator, encoding: Encoding.getByName("utf-8"));
-
-    if (response.statusCode != 200) return false;
-    return true;
-  }
-
-  Future<bool> removeOperators(List<int> list) async {
+  Future<bool> blockUsers(List<int> list) async {
     if (list.isEmpty) return false;
 
-    print(list.toString());
-    Response response =
-    await post(baseUrl + "/operator/deleteFew",body: list.toString(), headers: headers);
-    if (response.statusCode != 200) return false;
+    Response response = await post(baseUrl + "/user/blockFew",
+        headers: headers,
+        body: list.toString(),
+        encoding: Encoding.getByName("utf-8"));
+    requestDebug(
+        "/user/blockFew", response.statusCode, response.body.toString());
 
+    if (response.statusCode != 200) return false;
     return true;
   }
 }

@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 
 import 'package:summ_flutter_app/UI/ToastManager.dart';
 
-import 'entity/User.dart';
+import 'entity/User/User.dart';
 
 class MyLoginPage extends StatefulWidget {
   MyLoginPage({Key key, this.title}) : super(key: key);

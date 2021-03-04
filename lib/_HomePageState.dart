@@ -7,7 +7,7 @@ import 'package:summ_flutter_app/network/Networker.dart';
 
 import 'UI/NavigationDrawerWorker.dart';
 import 'entity/Role.dart';
-import 'entity/Summ.dart';
+import 'entity/Summ/Summ.dart';
 import 'network/Networker.dart';
 
 class MyHomePage extends StatefulWidget {
